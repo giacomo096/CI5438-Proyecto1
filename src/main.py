@@ -17,12 +17,12 @@ def shortVariance(X,df,ndf, w):
         w = math.sqrt(((x-y)/x)*((x-y)/x))
         l2.append(w)
 
-    ndf['aux'] = l2
+    df['aux'] = l2
 
-    ndf = ndf.loc[ndf["aux"] < 3]
-    ndf = ndf.drop(["aux"],axis = 1)
+    df = df.loc[df["aux"] < 3]
+    df = df.drop(["aux"],axis = 1)
     
-    return ndf
+    return df
 
 
 def variance(X,df,w):
@@ -60,35 +60,37 @@ def main():
     nArray = ndf.drop(['Unnamed: 0', 'Price'], axis=1).to_numpy()
 
     w = gradientDescent(nArray,prices,iterations=5000, alpha=0.01, epsilon=2e-3)
-    
-
+    r1 = variance(nArray,df,w)
 
     #Eliminamos las filas con valores atípicos
-    ndf2 = shortVariance(nArray,df,ndf,w)
-    print (ndf2)
+    df = shortVariance(nArray,df,ndf,w)
+    ndf = df.copy()
+    print(df)
+
+    #Normalizamos la data
+    for column in ndf.columns[1:]: 
+        ndf[column] = (ndf[column] - ndf[column].min()) / (ndf[column].max() - ndf[column].min())
+    print(ndf)
 
 
 
     #Extraemos la columna de precios
-    prices2 = ndf2['Price'].to_numpy().reshape(-1,1)
+    prices = ndf['Price'].to_numpy().reshape(-1,1)
 
     #Eliminamos las columnas no relevantes
-    nArray2 = ndf2.drop(['Unnamed: 0', 'Price'], axis=1).to_numpy()
+    nArray = ndf.drop(['Unnamed: 0', 'Price'], axis=1).to_numpy()
 
-    w2 = gradientDescent(nArray2,prices2,iterations=5000, alpha=0.01, epsilon=2e-3)
+    w2 = gradientDescent(nArray,prices,iterations=5000, alpha=0.01, epsilon=2e-3)
 
-
-
-
-    print(variance(nArray,df,w))
-    print(variance(nArray2,df,w2))
+    r2 = variance(nArray,df,w2)
     
+    print(r1,r2)
 
     #Validamos la predicción de los precios
-    denormalized_prices = (predict(nArray,w) * (df['Price'].max() - df['Price'].min())) + df['Price'].min()
-    denormalized_prices2 = (predict(nArray2,w2) * (df['Price'].max() - df['Price'].min())) + df['Price'].min()
-    print(denormalized_prices)
-    print(denormalized_prices2)
+    #denormalized_prices = (predict(nArray,w) * (df['Price'].max() - df['Price'].min())) + df['Price'].min()
+    #denormalized_prices2 = (predict(nArray2,w2) * (df['Price'].max() - df['Price'].min())) + df['Price'].min()
+    #print(denormalized_prices)
+    #print(denormalized_prices2)
 
 
 main()
