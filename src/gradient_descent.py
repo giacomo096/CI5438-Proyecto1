@@ -9,14 +9,16 @@ def lossFn(y, h):
 
 #Evaluación de los valores con sus pesos
 def predict(X, w):
+    X = np.append(np.ones((X.shape[0], 1)), X, axis=1)
     return np.dot(X,w)
 
 #
 def gradientDescent(X, y, iterations=300000, alpha=0.05, epsilon=1e-6):
 
-    X = np.append(np.ones((X.shape[0], 1)), X, axis=1)
+    X2 = np.append(np.ones((X.shape[0], 1)), X, axis=1)
+
     #Se toman las dimensiones del dataset
-    m, n = X.shape
+    m, n = X2.shape
 
     # Inicializar los pesos
     w = np.zeros((n, 1))
@@ -31,7 +33,7 @@ def gradientDescent(X, y, iterations=300000, alpha=0.05, epsilon=1e-6):
         #Actualización de los pesos
         for i in range(n):
             for j in range(n):
-                w[i] = w[i] + alpha * (X[j][i] * (y[j] - h[j]))
+                w[i] = w[i] + alpha * (X2[j][i] * (y[j] - h[j]))
 
         #Calculamos la perdida
         loss = lossFn(y,h)
@@ -79,8 +81,6 @@ def main():
     # Estimación de pesos usando descenso de gradiente
     weights = gradientDescent(X,Y)
     print(f"Pesos: \n{weights}")
-
-    X = np.append(np.ones((X.shape[0], 1)), X, axis=1)
 
     x1 = np.linspace(-200, 200, 10)
     y1 = w1*x1 + w2*x1 + w0
