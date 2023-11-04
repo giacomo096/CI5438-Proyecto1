@@ -48,12 +48,12 @@ def gradientDescent(X, y, iterations=300000, alpha=0.05, epsilon=1e-6):
         losses.append(loss)    
 
     # Visualización de curva de aprendizaje
-    fig = plt.figure(figsize = (14, 8))
+    """ fig = plt.figure(figsize = (14, 8))
     plt.plot(losses)
     plt.title("Loss vs. Iterations")
     plt.xlabel("Iterations")
     plt.ylabel("Loss")
-    plt.show()
+    plt.show() """
 
     return w
 

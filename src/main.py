@@ -53,13 +53,31 @@ def main():
 
     #Data import   
     df = pd.read_csv('../clean_data.csv')
-    X = df.copy()
-    for column in X.columns[1:]:
-            X[column] = (X[column] - X[column].min()) / (X[column].max() - X[column].min())
+    ndf = df.copy()
+    for column in ndf.columns[1:]:
+            ndf[column] = (df[column] - df[column].min()) / (df[column].max() - df[column].min())
 
     #Extraemos la columna de precio y eliminamos las que no son necesarias        
-    y = X['Price'].to_numpy().reshape(-1,1)
-    X = X.drop(['Unnamed: 0', 'Price', 'Others_F', 'Others_O'], axis=1).to_numpy()
+    y = ndf['Price'].to_numpy().reshape(-1,1)
+    X = ndf.drop(['Unnamed: 0', 'Price', 'Others_F', 'Others_O'], axis=1).to_numpy()
+
+    w = gradientDescent(X,y,iterations=5000, alpha=0.01, epsilon=2e-3)
+
+
+
+    #Eliminamos las filas con valores atípicos
+    df = shortVariance(X,df,ndf,w)
+    ndf = df.copy()
+
+    #Normalizamos la data
+    for column in ndf.columns[1:]: 
+        ndf[column] = (ndf[column] - ndf[column].min()) / (ndf[column].max() - ndf[column].min())
+
+    #Extraemos la columna de precios
+    y = ndf['Price'].to_numpy().reshape(-1,1)
+
+    #Eliminamos las columnas no relevantes
+    X = ndf.drop(['Unnamed: 0', 'Price'], axis=1).to_numpy()
 
     
 
@@ -75,7 +93,7 @@ def main():
         y_train, y_test = y[train_index], y[test_index]
         
         # Se entrena el modelo
-        w = gradientDescent(X_train, y_train, iterations=5000, alpha=0.0001, epsilon=2e-3)
+        w = gradientDescent(X_train, y_train, iterations=50000, alpha=0.0001, epsilon=2e-3)
         weights.append(w)
         
         #Se evalua el modelo
@@ -99,5 +117,8 @@ def main():
     predictions = predict(X,weights)
     print("\n Score: ", score(y,predictions))
 
-
 main()
+
+
+
+    
