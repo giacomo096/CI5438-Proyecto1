@@ -19,12 +19,12 @@ def shortVariance(X,df,ndf, w):
         w = math.sqrt(((x-y)/x)*((x-y)/x))
         l2.append(w)
 
-    ndf['aux'] = l2
+    df['aux'] = l2
 
-    ndf = ndf.loc[ndf["aux"] < 3]
-    ndf = ndf.drop(["aux"],axis = 1)
+    df = df.loc[df["aux"] < 3]
+    df = df.drop(["aux"],axis = 1)
     
-    return ndf
+    return df
 
 
 def variance(X,df,w):
