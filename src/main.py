@@ -20,7 +20,6 @@ def shortVariance(X,df,ndf, w):
         l2.append(w)
 
     df['aux'] = l2
-
     df = df.loc[df["aux"] < 3]
     df = df.drop(["aux"],axis = 1)
     
@@ -28,7 +27,6 @@ def shortVariance(X,df,ndf, w):
 
 
 def variance(X,df,w):
-
     l = (predict(X,w) * (df['Price'].max() - df['Price'].min())) + df['Price'].min()
 
     l2 = []
@@ -93,7 +91,7 @@ def main():
         y_train, y_test = y[train_index], y[test_index]
         
         # Se entrena el modelo
-        w = gradientDescent(X_train, y_train, iterations=50000, alpha=0.0001, epsilon=2e-3)
+        w = gradientDescent(X_train, y_train, iterations=100000, alpha=0.0001, epsilon=2e-4)
         weights.append(w)
         
         #Se evalua el modelo
